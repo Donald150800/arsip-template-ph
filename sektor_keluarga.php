@@ -1,5 +1,5 @@
 <?php
-include "koneksi.php";
+include 's/config.php';
 
 $inisial_sektor = $_GET['ids'];
 $qry = "SELECT * FROM tbl_sektor WHERE inisial_sektor = '$inisial_sektor'";

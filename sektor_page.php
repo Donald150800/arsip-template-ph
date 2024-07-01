@@ -1,5 +1,5 @@
 <?php
-include "koneksi.php";
+include 's/config.php';
 
 $qry = "SELECT *FROM tbl_sektor";
 $res = mysqli_query($conn, $qry);
