@@ -11,13 +11,12 @@ $stat = '';
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $response = $sektor->insertSektor($_POST); 
     echo json_encode($response);
-    // $msg = $result['message'];
-    // $stat = $result['status']; 
-} elseif (isset($_GET['type']) && isset($_GET['id'])) {
+    exit;
+} elseif (isset($_GET['method']) && isset($_GET['method']) == 'editDataSektor' && isset($_GET['id'])) {
     $response = $sektor->getDetailSektor($_GET['id']);
     echo json_encode($response);
     exit;
-} elseif (isset($_GET['method']) && $_GET['method'] == 'hapus' && isset($_GET['id'])) {
+} elseif (isset($_GET['method']) && $_GET['method'] == 'deleteSektor' && isset($_GET['id'])) {
     $response = $sektor->deleteSektor($_GET['id']);
     $msg = $response['message'];
     $stat = $response['status']; 
@@ -25,8 +24,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 } else {
     $data = $sektor->getAllSektor();
 }
-
-// GET ALL SEKTOR
-// echo json_encode($data);
-// include $_SERVER["DOCUMENT_ROOT"] . "/arsip-template-ph/index.php";
 ?>
