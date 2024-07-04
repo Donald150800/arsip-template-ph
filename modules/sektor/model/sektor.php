@@ -9,8 +9,8 @@ class Sektor
         $this->conn = $conn;
     }
 
-    public function insertSektor($data){
-
+    public function insertSektor($post){
+        parse_str($post, $data);
         if (!isset($data['inisial_sektor']) || !isset($data['nama_sektor']) || !isset($data['deskripsi_sektor'])) {
             return ['status' => 'error', 'message' => 'Data tidak lengkap'];
         }
@@ -89,7 +89,6 @@ class Sektor
         $id = mysqli_real_escape_string($this->conn, $id);
         $qryDelete = "DELETE FROM tbl_sektor WHERE kd_sektor = '$id'";
         
-
         if (mysqli_query($this->conn, $qryDelete)) {
             return ['status' => 'success', 'message' => 'Data berhasil dihapus'];
         } else {

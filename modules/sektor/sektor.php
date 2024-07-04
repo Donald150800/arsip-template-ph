@@ -8,20 +8,22 @@ $data = [];
 $msg = '';
 $stat = '';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $response = $sektor->insertSektor($_POST); 
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST['method'] == 'insertSektor') {
+    // var_dump($_POST);die();
+    $response = $sektor->insertSektor($_POST['formData']); 
     echo json_encode($response);
     exit;
-} elseif (isset($_GET['method']) && isset($_GET['method']) == 'editDataSektor' && isset($_GET['id'])) {
+} else if (isset($_GET['method']) && isset($_GET['method']) == 'editDataSektor') {
     $response = $sektor->getDetailSektor($_GET['id']);
     echo json_encode($response);
     exit;
-} elseif (isset($_GET['method']) && $_GET['method'] == 'deleteSektor' && isset($_GET['id'])) {
-    $response = $sektor->deleteSektor($_GET['id']);
-    $msg = $response['message'];
-    $stat = $response['status']; 
+} else if (isset($_POST['method']) && $_POST['method'] == 'deleteSektor') {
+    $response = $sektor->deleteSektor($_POST['id']);
+    echo json_encode($response);
     exit;
-} else {
-    $data = $sektor->getAllSektor();
+}else if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST['method'] == 'getAll') {
+    $response = $sektor->getAllSektor();
+    echo json_encode($response);
 }
 ?>

@@ -4,7 +4,8 @@ include 'partials/header.php';
 // var_dump($res);
 
 ?>
-
+<style>
+</style>
       <!-- Main Content -->
       <div class="main-content">
         <section class="section">
@@ -27,7 +28,7 @@ include 'partials/header.php';
                     <input type="hidden" name="kd_sektor" id="kd_sektor" value="">
                   <div class="form-group mb-0">
                     <label>Inisial sektor</label>
-                    <input type="text" class="form-control" placeholder="Inisial Sektor" name="inisial_sektor" id="inisialSektor" maxlengTH="3">
+                    <input type="text" class="form-control" placeholder="Inisial Sektor" name="inisial_sektor" id="inisialSektor" maxlength="3" oninput="this.value = this.value.toUpperCase()">
                   </div>
                   <div class="form-group mb-0">
                     <label>Nama Sektor</label>
@@ -49,12 +50,12 @@ include 'partials/header.php';
             </div>
             <div class="col-md-8 col-lg-8">
               <div class="card">
-                <div class="card-header">
+                <div class="card-header pb-0">
                   <h4>Data Sektor</h4>
                 </div>
-                <div class="card-body">
+                <div class="card-body pt-0">
                 <div class="table-responsive">
-                  <table class="table table-striped" id="sektorTable" role="grid" aria-describedby="table-2_info">
+                  <table class="table table-striped" id="sektorTable" class="display" role="grid" aria-describedby="table-2_info">
                     <thead>
                       <tr role="row">
                         <th>Kode Sektor</th>
@@ -63,18 +64,6 @@ include 'partials/header.php';
                       </tr>
                     </thead>
                     <tbody>
-                      <?php foreach($data as $row): ?>
-                      <tr role="row">
-                        <td><?= $row['inisial_sektor']?></td>
-                        <td><?= $row['nama_sektor']?></td>
-                        <td>
-                          <a href="#" class="btn btn-secondary btn-sm btn-edit" onclick="getData(<?= $row['kd_sektor'] ?>)"><i
-                              class="fas fa-edit"></i></a>
-                          <a href="#" onclick="deleteData(<?= $row['kd_sektor'] ?>)"
-                            class="btn btn-danger btn-sm btn-delete"><i class="fas fa-trash-alt"></i></a>
-                        </td>
-                      </tr>
-                      <?php endforeach; ?>
                     </tbody>
                   </table>
                 </div>
@@ -91,43 +80,44 @@ include 'partials/header.php';
   <script src="node_modules/prismjs/prism.js"></script>
 <script src="node_modules/izitoast/dist/js/iziToast.min.js"></script>
 <script> 
+let tblSektor;
+  
 
   $(document).ready(function() {
-    let msg = '<?= isset($msg) ? $msg : '' ?>';
-    let stat = '<?= isset($stat) ? $stat : '' ?>';
 
-    function showToastr(type, message) {
-        iziToast[type]({
-            title: type.charAt(0).toUpperCase() + type.slice(1),
-            message: message,
-            position: 'topRight',
-            timeout: 3000,
-        });
-    }
-
-    // Cek apakah ada pesan toastr di localStorage
-    let toastrMessage = localStorage.getItem('toastrMessage');
-    let toastrType = localStorage.getItem('toastrType');
-
-    if (toastrMessage) {
-        // Tampilkan toastr
-        showToastr(toastrType, toastrMessage);
-
-        // Hapus pesan dari localStorage
-        localStorage.removeItem('toastrMessage');
-        localStorage.removeItem('toastrType');
-    }
-
-    var tblSektor = $('#sektorTable').DataTable({
-        responsive: true,
-        pageLength: 4, // Set the number of rows per page
-        paging: true,
-        lengthChange: false,
-        searching: false,
-        ordering: true,
-        info: true,
-        autoWidth: false,
-    });
+  tblSektor = $('#sektorTable').DataTable({
+    responsive: true,
+    pageLength: 4,
+    paging: true,
+    pagingType: 'simple_numbers',
+    lengthChange: false,
+    ordering: true,
+    info: true,
+    autoWidth: false,
+    language: { 
+        search: "_INPUT_",
+        searchPlaceholder: "Search..."
+    },
+    ajax: {
+        url: '<?= $base_url ?>modules/sektor/sektor.php',
+        type: 'POST',
+        data: {method: 'getAll'},
+        dataSrc: ''
+    },
+    columns: [
+        { data: 'inisial_sektor' },
+        { data: 'nama_sektor' },
+        {
+            data: null,
+            render: function (data, type, row) {
+                return `
+                    <center><a href="#" class="btn btn-warning btn-sm btn-edit" onclick="getData(${row.kd_sektor})"><i class="fas fa-edit"></i></a>
+                    <a href="#" onclick="deleteData(${row.kd_sektor})" class="btn btn-danger btn-sm btn-delete"><i class="fas fa-trash-alt"></i></a></center>
+                `;
+            }
+        }
+    ]
+});
 
     $('#btnSave').click(function(event) {
         event.preventDefault();
@@ -156,17 +146,19 @@ include 'partials/header.php';
                 $.ajax({
                     url: '<?= $base_url ?>modules/sektor/sektor.php',
                     type: 'POST',
-                    data: formData,
+                    data: {
+                      formData,
+                      method: 'insertSektor',
+                    },
                     dataType: 'json',
                     success: function(response) {
                         if (response.status === 'success') {
-                            // Jika berhasil, lakukan tindakan berikut
-                            location.reload(); // Reload halaman
-                            localStorage.setItem('toastrMessage', response.message);
-                            localStorage.setItem('toastrType', response.status);
-                            $('#f1')[0].reset(); // Reset form setelah berhasil
+                            showToastr(response.status, response.message);
+                            tblSektor.ajax.reload();
+                            $('#f1')[0].reset(); 
+                            $('#btnReset').addClass('d-none');
+                            $('#kd_sektor').val('');
                         } else {
-                            // Jika terjadi kesalahan dari sisi server
                             showToastr('error', response.message);
                         }
                     },
@@ -181,7 +173,6 @@ include 'partials/header.php';
             }
         });
     });
-
   });
 
 function resetUpdate() {
@@ -218,28 +209,58 @@ function getData(id, type) {
 }
 
 function deleteData(id) {
-    $.ajax({
-        url: '<?= $base_url ?>modules/sektor/sektor.php',
-        type: 'GET',
-        data: { 
-            method: 'deleteSektor',
-            id: id
-        },
-        success: function(response) {
-            console.log(response);
-            location.reload();
-        },
-        error: function(xhr, status, error) {
-            console.error('Error:', error);
-        }
-    });
-}
-    // document.getElementById('btnSave').addEventListener('click', function() {
-    //   event.preventDefault();
-    //   $('#ministryModal').modal('hide');
-    //   showToastr('success', "Sukses menyimpan Aset Bergerak");
-    //   // console.log('TEST');
-    // });
+event.preventDefault();
+        swal({
+            title: "Apakah anda yakin akan menghapus sektor?",
+            icon: "info",
+            buttons: {
+                cancel: {
+                    text: "Cancel",
+                    value: null,
+                    visible: true,
+                    className: "",
+                    closeModal: true,
+                },
+                confirm: {
+                    text: "Yes",
+                    value: true,
+                    visible: true,
+                    className: "",
+                    closeModal: true
+                }
+            }
+        }).then((isConfirm) => {
+            if (isConfirm) {
+                $.ajax({
+                  url: '<?= $base_url ?>modules/sektor/sektor.php',
+                  type: 'POST',
+                  data: { 
+                      method: 'deleteSektor',
+                      id: id
+                  },
+                  success: function(response) {
+                    response = JSON.parse(response);
+                    showToastr(response.status, response.message);
+                    tblSektor.ajax.reload();
+                  },
+                  error: function(xhr, status, error) {
+                      console.error('Error:', error);
+                  }
+              })
+            } else {
+                console.log("Pengguna membatalkan aksi.");
+            }
+        });
+  }
+
+  function showToastr(type, message) {
+      iziToast[type]({
+          title: type.charAt(0).toUpperCase() + type.slice(1),
+          message: message,
+          position: 'topRight',
+          timeout: 3000,
+      });
+  }
 </script>
 </body>
 
