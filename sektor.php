@@ -164,6 +164,7 @@ let tblSektor;
                     },
                     error: function(xhr, status, error) {
                         // Jika terjadi kesalahan pada saat mengirim data (AJAX error)
+                        console.log(error);
                         showToastr('error', 'Terjadi kesalahan saat mengirim data');
                     }
                 });
