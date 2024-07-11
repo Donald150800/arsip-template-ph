@@ -117,7 +117,7 @@ let tblSektor;
             }
         }
     ]
-});
+  });
 
     $('#btnSave').click(function(event) {
         event.preventDefault();

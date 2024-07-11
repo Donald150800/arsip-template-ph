@@ -25,5 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST['method'] == 'insertSektor') 
 }else if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST['method'] == 'getAll') {
     $response = $sektor->getAllSektor();
     echo json_encode($response);
+} else{
+    $res = $sektor->getSektorPage();
 }
 ?>

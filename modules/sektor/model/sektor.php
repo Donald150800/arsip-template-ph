@@ -110,5 +110,34 @@ class Sektor
 
         return $data;
     }
+
+    public function getSektorPage(){
+        $qry = "SELECT 
+                sektor.inisial_sektor, 
+                sektor.kd_sektor, 
+                sektor.nama_sektor, 
+                COUNT(DISTINCT keluarga.kd_keluarga) AS total_keluarga,
+                COUNT(anggota.kd_anggota) AS total_anggota_keluarga
+                FROM 
+                    tbl_sektor sektor
+                LEFT JOIN 
+                    tbl_keluarga keluarga ON sektor.kd_sektor = keluarga.kd_sektor
+                LEFT JOIN 
+                    tbl_anggota_keluarga anggota ON keluarga.kd_keluarga = anggota.kd_keluarga
+                GROUP BY 
+                    sektor.kd_sektor, sektor.nama_sektor
+                ";
+
+                $res = mysqli_query($this->conn, $qry);
+
+                $data = [];
+                if ($res) {
+                    while ($row = mysqli_fetch_assoc($res)) {
+                        $data[] = $row;
+                    }
+                }
+            
+                return $data;
+    }
 }
 ?>
