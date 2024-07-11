@@ -18,6 +18,7 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">
 
   <!-- Template CSS -->
+  <link rel="stylesheet" href="assets/modules/jquery-selectric/selectric.css">
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/components.css">
   <link rel="stylesheet" href="node_modules/prismjs/themes/prism.css">
@@ -67,18 +68,15 @@
           </div>
           <ul class="sidebar-menu">
             <li class="menu-header">Dashboard</li>
-            <li><a class="nav-link" href="index.html"><i class="fas fa-fire"></i><span>Dashboard</span></a></li>
+            <li><a class="nav-link" href=""><i class="fas fa-fire"></i><span>Dashboard</span></a></li>
+            <li><a class="nav-link" href=""><i class="fas fa-building"></i> <span>Keluarga</span></a></li>
+            <li><a class="nav-link" href="sektor_page.php"><i class="fas fa-archive"></i> <span>Sektor</span></a></li>
             <li class="menu-header">Master Data</li>
-            <li><a class="nav-link" href="area.html"><i class="fas fa-building"></i> <span>Area</span></a></li>
-            <li><a class="nav-link" href="barang.html"><i class="fas fa-archive"></i> <span>Barang</span></a></li>
-            <li class="menu-header">Setting</li>
             <li class="nav-item dropdown">
               <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-cog"></i>
-                <span>Settings</span></a>
+                <span>Master Data</span></a>
               <ul class="dropdown-menu">
-                <li><a class="nav-link" href="aset.html"><span>Aset</span></a></li>
-                <li><a class="nav-link" href="jenis.html"><span>Jenis</span></a></li>
-                <li><a class="nav-link" href="unit.html"><span>Unit</span></a></li>
+                <li><a class="nav-link" href="sektor.php"><span>Data Sektor</span></a></li>
               </ul>
             </li>
 
