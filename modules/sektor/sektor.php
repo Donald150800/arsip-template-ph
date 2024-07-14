@@ -1,4 +1,9 @@
 <?php
+session_start();
+if (!isset($_SESSION['username'])) {
+    header("Location: {$base_url}login.php");// Redirect ke halaman login jika belum login
+    exit();
+}
 include $_SERVER["DOCUMENT_ROOT"].'/arsip-template-ph/s/config.php';
 
 include 'model/sektor.php';
@@ -22,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST['method'] == 'insertSektor') 
     $response = $sektor->deleteSektor($_POST['id']);
     echo json_encode($response);
     exit;
-}else if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST['method'] == 'getAll') {
+} else if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST['method'] == 'getAll') {
     $response = $sektor->getAllSektor();
     echo json_encode($response);
 } else{

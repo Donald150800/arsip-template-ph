@@ -39,68 +39,105 @@ class Keluarga
         return $data;
     }
     
-    public function insertDataKeluarga($post){
-        parse_str($post, $data);
-
-        $nama_keluarga = mysqli_real_escape_string($this->conn, $data['nama_keluarga']);
-        $alamat_keluarga = mysqli_real_escape_string($this->conn, $data['alamat_keluarga']);
+    public function insertDataKeluarga($post, $files) {
+        $nama_keluarga = mysqli_real_escape_string($this->conn, $post['nama_keluarga']);
+        $alamat_keluarga = mysqli_real_escape_string($this->conn, $post['alamat_keluarga']);
         $created_date = date('Y-m-d H:i:S');
-        $kd_sektor = mysqli_real_escape_string($this->conn, $data['kd_sektor']);
-        $nama_anggota = $data['nama_anggota'];
-        $jenis_kelamin = $data['jenis_kelamin'];
-        $status_hubungan = $data['status_hubungan'];
-
-        if($data['act'] == 'do_add'){   
-            $kd_ref_keluarga = mysqli_real_escape_string($this->conn, $data['kd_ref_keluarga']);
+        $kd_sektor = mysqli_real_escape_string($this->conn, $post['kd_sektor']);
+        $nama_anggota = $post['nama_anggota'];
+        $jenis_kelamin = $post['jenis_kelamin'];
+        $status_hubungan = $post['status_hubungan'];
+        $rand = sprintf('%04d', rand(0, 9999));
+    
+        if ($post['act'] == 'do_add') {
+            $kd_ref_keluarga = mysqli_real_escape_string($this->conn, $post['kd_ref_keluarga']);
             $qry = "INSERT INTO tbl_keluarga (kd_keluarga, kd_ref_keluarga, nama_keluarga, alamat_keluarga, kd_sektor, created_at) VALUES ('', '$kd_ref_keluarga', '$nama_keluarga', '$alamat_keluarga', $kd_sektor, '$created_date')";      
             $ret = mysqli_query($this->conn, $qry);
             $kd_keluarga_last = mysqli_insert_id($this->conn);
-            
+    
+            // Handle file upload
+            if (isset($files['file_keluarga']) && $files['file_keluarga']['error'] == UPLOAD_ERR_OK) {
+                $upload_dir = $_SERVER['DOCUMENT_ROOT'] . '/arsip-template-ph/assets/uploads/';
+                if (!is_dir($upload_dir)) {
+                    mkdir($upload_dir, 0755, true);
+                }
+    
+                $file_tmp_path = $files['file_keluarga']['tmp_name'];
+                $file_name = $files['file_keluarga']['name'];
+                $file_ext = pathinfo($file_name, PATHINFO_EXTENSION);
+                $new_file_name = "File_" . $kd_ref_keluarga . "_" . $rand . ".". $file_ext;
+                $upload_path = $upload_dir . $new_file_name;
+    
+                if (move_uploaded_file($file_tmp_path, $upload_path)) {
+                    // File upload success, insert file info into tbl_dokumen
+                    $qryFile = "INSERT INTO tbl_dokumen (kd_keluarga, nama_file, created_at) VALUES ('$kd_keluarga_last', '$new_file_name', '$created_date')";
+                    mysqli_query($this->conn, $qryFile);
+                } else {
+                    return ['status' => 'error', 'message' => 'Terjadi kesalahan saat mengupload file'];
+                }
+            }
+    
+            // Insert family members into tbl_anggota_keluarga
             for ($i = 0; $i < count($nama_anggota); $i++) {
-                $nama = $nama_anggota[$i];
-                $kelamin = $jenis_kelamin[$i];
-                $status = $status_hubungan[$i];
-                $kueri = "INSERT INTO tbl_anggota_keluarga (kd_keluarga, nama_anggota, jenis_kelamin, status_hubungan, created_at, updated_at) VALUES ($kd_keluarga_last, '$nama', '$kelamin', '$status', '$created_date', null)";
-                // echo $kueri.'<br>'; die();
+                $nama = mysqli_real_escape_string($this->conn, $nama_anggota[$i]);
+                $kelamin = mysqli_real_escape_string($this->conn, $jenis_kelamin[$i]);
+                $status = mysqli_real_escape_string($this->conn, $status_hubungan[$i]);
+                $kueri = "INSERT INTO tbl_anggota_keluarga (kd_keluarga, nama_anggota, jenis_kelamin, status_hubungan, created_at, updated_at) VALUES ('$kd_keluarga_last', '$nama', '$kelamin', '$status', '$created_date', null)";
                 $ret = mysqli_query($this->conn, $kueri);
             }
-        } else if($data['act'] == 'do_update'){
-            $kd_ref_keluarga = mysqli_real_escape_string($this->conn, $data['kode_ref']);
-            $kd_keluarga = mysqli_real_escape_string($this->conn, $data['kd_keluarga']);
-            $qry = "UPDATE tbl_keluarga SET kd_ref_keluarga = '$kd_ref_keluarga', nama_keluarga = '$nama_keluarga', alamat_keluarga = '$alamat_keluarga', updated_at = '$created_date' WHERE kd_keluarga = $kd_keluarga";      
+        } else if ($post['act'] == 'do_update') {
+            $kd_ref_keluarga = mysqli_real_escape_string($this->conn, $post['kode_ref']);
+            $kd_keluarga = mysqli_real_escape_string($this->conn, $post['kd_keluarga']);
+            $qry = "UPDATE tbl_keluarga SET kd_ref_keluarga = '$kd_ref_keluarga', nama_keluarga = '$nama_keluarga', alamat_keluarga = '$alamat_keluarga', updated_at = '$created_date' WHERE kd_keluarga = '$kd_keluarga'";      
             $ret = mysqli_query($this->conn, $qry);
-
-            for ($i = 0; $i < count($nama_anggota); $i++) {
-                $nama = $nama_anggota[$i];
-                $kelamin = $jenis_kelamin[$i];
-                $status = $status_hubungan[$i];
-
-                // Check if the member exists in the database
-                if(isset($data['kd_anggota'][$i])){
-                    $kd_anggota = $data['kd_anggota'][$i];
-                    $kueri = "UPDATE tbl_anggota_keluarga SET nama_anggota = '$nama', jenis_kelamin = '$kelamin', status_hubungan = '$status', updated_at = '$created_date' WHERE kd_anggota = $kd_anggota";
-                } else {
-                    $kueri = "INSERT INTO tbl_anggota_keluarga (kd_keluarga, nama_anggota, jenis_kelamin, status_hubungan, created_at) VALUES ($kd_keluarga, '$nama', '$kelamin', '$status', '$created_date')";
+    
+            // Handle file update if new file uploaded
+            if (isset($files['file_keluarga']) && $files['file_keluarga']['error'] == UPLOAD_ERR_OK) {
+                $upload_dir = $_SERVER['DOCUMENT_ROOT'] . '/arsip-template-ph/assets/uploads/';
+                if (!is_dir($upload_dir)) {
+                    mkdir($upload_dir, 0755, true);
                 }
-
+    
+                $file_tmp_path = $files['file_keluarga']['tmp_name'];
+                $file_name = $files['file_keluarga']['name'];
+                $file_ext = pathinfo($file_name, PATHINFO_EXTENSION);
+                $new_file_name = "File_" . $kd_ref_keluarga . "_" . $rand . ".". $file_ext;
+                $upload_path = $upload_dir . $new_file_name;
+    
+                if (move_uploaded_file($file_tmp_path, $upload_path)) {
+                    // Delete existing file record if any
+                    $delQry = "DELETE FROM tbl_dokumen WHERE kd_keluarga = '$kd_keluarga'";
+                    mysqli_query($this->conn, $delQry);
+    
+                    // Insert new file record
+                    $qryFile = "INSERT INTO tbl_dokumen (kd_keluarga, nama_file, created_at) VALUES ('$kd_keluarga', '$new_file_name', '$created_date')";
+                    mysqli_query($this->conn, $qryFile);
+                } else {
+                    return ['status' => 'error', 'message' => 'Terjadi kesalahan saat mengupload file'];
+                }
+            }
+    
+            // Update or insert family members in tbl_anggota_keluarga
+            for ($i = 0; $i < count($nama_anggota); $i++) {
+                $nama = mysqli_real_escape_string($this->conn, $nama_anggota[$i]);
+                $kelamin = mysqli_real_escape_string($this->conn, $jenis_kelamin[$i]);
+                $status = mysqli_real_escape_string($this->conn, $status_hubungan[$i]);
+    
+                if (isset($post['kd_anggota'][$i])) {
+                    $kd_anggota = mysqli_real_escape_string($this->conn, $post['kd_anggota'][$i]);
+                    $kueri = "UPDATE tbl_anggota_keluarga SET nama_anggota = '$nama', jenis_kelamin = '$kelamin', status_hubungan = '$status', updated_at = '$created_date' WHERE kd_anggota = '$kd_anggota'";
+                } else {
+                    $kueri = "INSERT INTO tbl_anggota_keluarga (kd_keluarga, nama_anggota, jenis_kelamin, status_hubungan, created_at, updated_at) VALUES ('$kd_keluarga', '$nama', '$kelamin', '$status', '$created_date', null)";
+                }
                 $ret = mysqli_query($this->conn, $kueri);
             }
         }
     
-        if($ret){
-            if($data['act']== 'do_add'){
-                return ['status' => 'success', 'message' => 'Keluarga ' . $nama_keluarga . ' berhasil ditambahkan'];
-            } else if($data['act']== 'do_update'){
-                return ['status' => 'success', 'message' => 'Keluarga ' . $nama_keluarga . ' berhasil diperbarui'];
-            }
-        } else {
-            if($data['act'] == 'do_add'){
-                return ['status' => 'error', 'message' => 'Terjadi kesalahan saat menambahkan data'];
-            } else if($data['act'] == 'do_update'){
-                return ['status' => 'error', 'message' => 'Terjadi kesalahan saat memperbarui data'];
-            }
-        }
+        return ['status' => 'success', 'message' => 'Data berhasil disimpan'];
     }
+    
+    
+    
 
     public function getAllKeluarga($kdsektor){
         $qry = "SELECT 
@@ -108,11 +145,14 @@ class Keluarga
             k.kd_ref_keluarga,
             k.nama_keluarga,
             k.kd_ref_keluarga,
+            d.nama_file,
             COUNT(a.kd_anggota) AS total_anggota_keluarga
         FROM 
             tbl_keluarga k
         LEFT JOIN 
             tbl_anggota_keluarga a ON k.kd_keluarga = a.kd_keluarga
+        LEFT JOIN
+            tbl_dokumen d ON k.kd_keluarga = d.kd_keluarga
         WHERE
             k.kd_sektor = $kdsektor
         GROUP BY 
@@ -135,7 +175,7 @@ class Keluarga
     {   
         $dataKel = [];
         $id = mysqli_real_escape_string($this->conn, $id);
-        $qryGet = "SELECT klg.kd_keluarga, klg.kd_ref_keluarga, klg.nama_keluarga, klg.alamat_keluarga FROM tbl_keluarga klg WHERE klg.kd_keluarga = '$id'";
+        $qryGet = "SELECT klg.kd_keluarga, klg.kd_ref_keluarga, klg.nama_keluarga, klg.alamat_keluarga, dk.nama_file FROM tbl_keluarga klg LEFT JOIN tbl_dokumen dk ON klg.kd_keluarga = dk.kd_keluarga WHERE klg.kd_keluarga = '$id'";
         $resultKeluarga = mysqli_query($this->conn, $qryGet);
 
         $qryGetAnggota = "SELECT agt.nama_anggota, agt.jenis_kelamin, agt.status_hubungan, agt.kd_anggota FROM tbl_anggota_keluarga agt WHERE agt.kd_keluarga = '$id'";
@@ -154,4 +194,21 @@ class Keluarga
             return ['content' => 'Error executing query'];
         }
     }
+
+    public function deleteKeluarga($id)
+    {
+        $id = mysqli_real_escape_string($this->conn, $id);
+        $qryDelete = "DELETE FROM tbl_keluarga WHERE kd_keluarga = '$id'";
+        $qryDeleteAng = "DELETE FROM tbl_anggota_keluarga WHERE kd_keluarga = '$id'";
+        $qryDeleteDok = "DELETE FROM tbl_dokumen WHERE kd_keluarga = '$id'";
+        mysqli_query($this->conn, $qryDeleteAng);
+        mysqli_query($this->conn, $qryDeleteDok);
+
+        if (mysqli_query($this->conn, $qryDelete)) {
+            return ['status' => 'success', 'message' => 'Data Keluarga berhasil dihapus'];
+        } else {
+            return ['status' => 'error', 'message' => 'Terjadi kesalahan saat menghapus data'];
+        }
+    }
+    
 }

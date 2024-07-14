@@ -138,146 +138,35 @@ include 'partials/header.php';
                                       </div>                                    
                                     </div>
                                   </div>
-                                  <div id="detailContainer">
-                                    
-                                  </div>
-                              </div>
+                                <div id="detailContainer">
+                                  
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-3">
+                                        Dokumen Keluarga :
+                                    </div>
+                                    <div class="col-4">
+                                        <div id="uploadBox">
+                                            <div class="custom-file">
+                                                <input type="file" class="custom-file-input" name="file_keluarga" id="file_keluarga">
+                                                <label class="custom-file-label" id="fileUploadName" for="customFile">Choose file</label>
+                                            </div>
+                                        </div>
+                                        <div id="fileBox">
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                          </div>
-              </div>
+                        </div>
+                    </div>
+                </div>
               <div class="modal-footer pt-3">
                   <button type="button" class="btn btn-danger" id="btnClose" data-dismiss="modal">Close</button>
                   <button type="button" onclick="cancelEdit()" id="btnCancel" class="btn btn-default d-none">Cancel</button>
                   <button type="submit" id="btnSave" class="btn btn-primary">Save</button>
                   <button type="button" onclick="editData()" id="btnEdit" class="btn btn-warning d-none">Edit</button>
-                </form>
-              </div>
-          </div>
-      </div>
-    </div>
-  </div>
-  <!-- Modal Ministry -->
-  <div class="modal fade" id="fileModal" tabindex="-1" role="dialog" aria-labelledby="ministryModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-          <div class="modal-content">
-              <div class="modal-header pb-3 pt-3" style="background-color: #06548A; color: white;">
-                  <h5 class="modal-title" id="formLabelFile">File Keluarga</h5> 
-              </div>
-              <div class="modal-body pb-0">
-                  <form id="f2" enctype="multipart/form-data">
-                    <input type="hidden" name="kd_sektor" value="<?= $data['kd_sektor']?>">
-                    <input type="hidden" name="act" id="act" value="do_add">
-                    <input type="hidden" name="kode_ref" value="" id="kodeRef">
-                    <input type="hidden" name="kd_keluarga" value="" id="kdKel">
-                      <div class="row">
-                        <div class="col-12">
-                          <div class="card mb-1">
-                            <div class="card-body p-0">
-                                <div class="row">
-                                    <div class="col-4">
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <div class="form-group mb-2">
-                                                    <label>Kartu Keluarga </label>
-                                                    <div class="custom-file">
-                                                      <input type="file" class="custom-file-input" id="customFile">
-                                                      <label class="custom-file-label" for="customFile">Choose file</label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-4">
-                                      <div class="row">
-                                            <div class="col-12">
-                                                <div class="form-group mb-2">
-                                                    <label>Akta Perkawinan </label>
-                                                    <input type="text" class="form-control" name="nama_keluarga" placeholder="Nama Keluarga / Nama Kepala Keluarga" id="nama_kel">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-4">
-                                      <div class="row">
-                                            <div class="col-12">
-                                                <div class="form-group mb-2">
-                                                    <label>Nama Keluarga </label>
-                                                    <input type="text" class="form-control" name="nama_keluarga" placeholder="Nama Keluarga / Nama Kepala Keluarga" id="nama_kel">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                            <div class="col-12">
-                                                <div class="form-group mb-2">
-                                                    <label>Alamat Rumah :</label>
-                                                    <textarea class="form-control validate" name="alamat_keluarga" placeholder="Alamat Rumah" style="height: 145px;" id="alamat_kel"></textarea>
-                                                </div>
-                                            </div>
-                                        </div>
-                                <div class="row">
-                                    <div class="col-12 d-flex justify-content-end">
-                                        <div class="form-group mb-2">
-                                            <div class="form-check">
-                                                <button id="tambahAnak" class="btn btn-primary">Tambah</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                  <div id="anakContainer" class="d-none">
-                                    <div class="row anak">
-                                      <div class="col-12">
-                                        <div class="row">
-                                            <div class="col-4">
-                                                <div class="form-group">
-                                                    <label>Anggota Keluarga<span class="text-danger">*</span> :</label>
-                                                    <input type="text" class="form-control" name="nama_anggota[]" placeholder="Anggota Keluarga" id="anggota_keluarga">
-                                                </div>
-                                            </div>
-                                            <div class="col-4">
-                                                <div class="form-group">
-                                                    <label>Jenis Kelamin<span class="text-danger">*</span> :</label>
-                                                    <select class="form-control selectric" name="jenis_kelamin[]" id="jkPasangan">
-                                                        <option selected="" disabled>Jenis Kelamin</option>
-                                                        <option value="P">Pria</option>
-                                                        <option value="W">Wanita</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-4">
-                                                <div class="form-group">
-                                                    <label>Status<span class="text-danger">*</span> :</label>
-                                                    <select class="form-control selectric" name="status_hubungan[]" id="statPasangan">
-                                                        <option selected="" disabled>Status Hubungan</option>
-                                                        <option value="Ayah">Ayah</option>
-                                                        <option value="Ibu">Ibu</option>
-                                                        <option value="Anak">Anak</option>
-                                                        <option value="Lainnya">Lainnya</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex justify-content-end mt-0">
-                                            <button class="btn btn-danger deleteAnak">-</button>
-                                        </div>
-                                      </div>                                    
-                                    </div>
-                                  </div>
-                                  <div id="detailContainer">
-                                    
-                                  </div>
-                              </div>
-                            </div>
-                          </div>
-              </div>
-              <div class="modal-footer pt-3">
-                  <button type="button" class="btn btn-danger" id="btnClose" data-dismiss="modal">Close</button>
-                  <button type="button" onclick="cancelEdit()" id="btnCancel" class="btn btn-default d-none">Cancel</button>
-                  <button type="submit" id="btnSave" class="btn btn-primary">Save</button>
-                  <button type="button" onclick="editData()" id="btnEdit" class="btn btn-warning d-none">Edit</button>
-                </form>
-              </div>
+                </div>
+            </form>
           </div>
       </div>
     </div>
@@ -288,6 +177,7 @@ include 'partials/header.php';
   <script src="node_modules/prismjs/prism.js"></script>
 <script src="node_modules/izitoast/dist/js/iziToast.min.js"></script>
 <script src="assets/modules/jquery-selectric/jquery.selectric.min.js"></script>
+<script src="assets/modules/tooltip.js"></script>
 <script>
   let tblKeluarga;
   let kdSektor = <?= $data['kd_sektor']?>;
@@ -297,7 +187,7 @@ include 'partials/header.php';
   }
     $(document).ready(function(){
       
-      tblKeluarga = $('#keluargaTable').DataTable({
+    tblKeluarga = $('#keluargaTable').DataTable({
       responsive: true,
       pageLength: 10,
       paging: true,
@@ -329,14 +219,33 @@ include 'partials/header.php';
           { data: 'nama_keluarga' },
           { data: 'total_anggota_keluarga' },
           {
-              data: null,
-              render: function (data, type, row) {
-                  return `
-                      <center><a href="#" class="btn btn-warning btn-sm btn-edit" onclick="fileData(${row.kd_keluarga})"><i class="fas fa-folder"></i></a>
-                      <a href="#" onclick="deleteData(${row.kd_keluarga})" class="btn btn-danger btn-sm btn-delete"><i class="fas fa-trash-alt"></i></a></center>
-                  `;
-              }
-          }
+            data: 'nama_file',
+            render: function (data, type, row) {
+                if (data) {
+                    return `
+                        <center>
+                            <a href="#" class="btn btn-warning btn-sm btn-edit" onclick="downloadFile('${data}')">
+                                <i class="fas fa-folder"></i>
+                            </a>
+                            <a href="#" onclick="deleteData(${row.kd_keluarga})" class="btn btn-danger btn-sm btn-delete">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                        </center>
+                    `;
+                } else {
+                    return `
+                        <center>
+                            <a href="#" class="btn btn-secondary btn-sm btn-edit" data-toggle="tooltip" data-placement="left" title="File Not Available">
+                                <i class="fas fa-folder"></i>
+                            </a>
+                            <a href="#" onclick="deleteData(${row.kd_keluarga})" class="btn btn-danger btn-sm btn-delete">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                        </center>
+                        `;
+                    }
+                }
+            }
       ]
     });
 
@@ -363,14 +272,15 @@ include 'partials/header.php';
             }
         }).then((isConfirm) => {
             if (isConfirm) {
-                var formData = $('#f2').serialize();
+                var form = $('#f2')[0];
+                var formData = new FormData(form);
+                formData.append('method', 'insertKeluarga');
                 $.ajax({
                     url: '<?= $base_url ?>modules/keluarga/keluarga.php',
                     type: 'POST',
-                    data: {
-                      formData,
-                      method: 'insertKeluarga',
-                    },
+                    data: formData,
+                    contentType: false, // Mencegah jQuery dari menimpa tipe konten
+                    processData: false,
                     dataType: 'json',
                     success: function(response) {
                         if (response.status === 'success') {
@@ -479,6 +389,8 @@ include 'partials/header.php';
       $('.jkel').prop('disabled', false);
       $('.statushub').prop('disabled', false);
       $('#act').val('do_update');
+      $('#uploadBox').removeClass('d-none');
+      $('#fileBox').addClass('d-none');
       initializeSelectric();
     }
 
@@ -523,6 +435,13 @@ include 'partials/header.php';
             $('#formLabel').text(klg.kd_ref_keluarga+' - Kel. '+klg.nama_keluarga);
             $('#kdKel').val(klg.kd_keluarga);
             $('#kodeRef').val(klg.kd_ref_keluarga);
+            $('#fileUploadName').text(klg.nama_file);
+            $('#uploadBox').addClass('d-none');
+            if(klg.nama_file == '' || klg.nama_file == null){
+                $('#fileBox').text('Belum ada file yang di upload');
+            }else{
+                $('#fileBox').html('<a href="#" onclick="downloadFile(\'' + klg.nama_file + '\')">' + klg.nama_file + '</a>');
+            }
             $('#kd_ref_kel').val(klg.kd_ref_keluarga).prop('disabled', true);
             $('#nama_kel').val(klg.nama_keluarga).prop('disabled', true);
             $('#alamat_kel').val(klg.alamat_keluarga).prop('disabled', true);
@@ -536,37 +455,6 @@ include 'partials/header.php';
             // Looping data anggota dan buat card untuk setiap anggota
             anggota.forEach(function(item) {
                 var jkel = (item[1] == 'W')? 'Wanita' : 'Pria';
-                var cardHtml = `
-                    <div class="row anggota">
-                        <div class="col-12">
-                            <div class="card" style="border: 1px dotted;">
-                                <div class="card-body pt-0 pl-1">
-                                    <div class="row">
-                                        <div class="col-7 pl-0">
-                                            <table class="table" style="margin: 0;">
-                                                <tr>
-                                                    <td class="pr-0" style="width: 180px;">Nama Lengkap</td>
-                                                    <td class="p-0">:</td>
-                                                    <td class="p-0" style="width: 200px;">${item[0]}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Jenis Kelamin</td>
-                                                    <td class="p-0">:</td>
-                                                    <td class="p-0">${jkel}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Status Hubungan</td>
-                                                    <td class="p-0">:</td>
-                                                    <td class="p-0">${item[2]}</td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
 
                 var anakHtml = `
                     <div class="row anak">
@@ -608,8 +496,6 @@ include 'partials/header.php';
                 `;
                   
                 anakContainer.append(anakHtml);
-                
-                // detailContainer.append(cardHtml);
             });
         },
         error: function(xhr, status, error) {
@@ -617,6 +503,23 @@ include 'partials/header.php';
         }
      });
     }
+
+    function downloadFile(fileName) {
+    // Membuat URL lengkap dari server root dan path file
+    var url = '<?php echo $base_url; ?>assets/uploads/' + fileName;
+    var a = document.createElement("a");
+    a.href = url;
+    var arr = url.split('/');
+    var namaFile = arr[arr.length - 1];
+    a.download = namaFile; // Rename File
+    a.style.display = "none";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    showToastr('info','File is being downloaded.');
+}
+
+
     $(document).ready(function() {
       $('#relation').change(function() {
           if ($(this).is(':checked')) {
@@ -638,8 +541,11 @@ include 'partials/header.php';
       $('#alamat_kel').val('').prop('disabled', false);
       $('#btnSave').removeClass('d-none');
       $('#btnClose').removeClass('d-none');
+      $('#uploadBox').removeClass('d-none');
+      $('#fileBox').addClass('d-none');
       $('#btnEdit').addClass('d-none');
       $('#anakContainer').empty();
+      $('#fileUploadName').text('Choose File');
       $('#act').val('do_add');
 
       var newcontainer = `<div class="row anak">
@@ -687,21 +593,55 @@ include 'partials/header.php';
         });
     }
 
-    function fileData(kd_keluarga){
-      $('#fileModal').modal('show');
-    }
-      
-    // $.uploadPreview({
-    //   input_field: "#image-upload",   // Default: .image-upload
-    //   preview_box: "#image-preview",  // Default: .image-preview
-    //   label_field: "#image-label",    // Default: .image-label
-    //   label_default: "Choose File",   // Default: Choose File
-    //   label_selected: "Change File",  // Default: Change File
-    //   no_label: false,                // Default: false
-    //   success_callback:  function() {
-    //     $('#image-label').addClass('d-none');
-    //   }
-    // });
+    function deleteData(id) {
+    event.preventDefault();
+            swal({
+                title: "Apakah anda yakin akan menghapus data keluarga ini?",
+                icon: "info",
+                buttons: {
+                    cancel: {
+                        text: "Cancel",
+                        value: null,
+                        visible: true,
+                        className: "",
+                        closeModal: true,
+                    },
+                    confirm: {
+                        text: "Yes",
+                        value: true,
+                        visible: true,
+                        className: "",
+                        closeModal: true
+                    }
+                }
+            }).then((isConfirm) => {
+                if (isConfirm) {
+                    $.ajax({
+                      url: '<?= $base_url ?>modules/keluarga/keluarga.php',
+                      type: 'POST',
+                      data: { 
+                          method: 'deleteKeluarga',
+                          id: id
+                      },
+                      success: function(response) {
+                        response = JSON.parse(response);
+                        showToastr(response.status, response.message);
+                        tblKeluarga.ajax.reload();
+                      },
+                      error: function(xhr, status, error) {
+                          console.error('Error:', error);
+                      }
+                  })
+                } else {
+                    console.log("Pengguna membatalkan aksi.");
+                }
+            });
+      }
+
+    $(document).on('change', '.custom-file-input', function(event) {
+        var inputFile = event.currentTarget;
+        $(inputFile).parent().find('.custom-file-label').html(inputFile.files[0].name);
+    });
 </script>
 </body>
 
